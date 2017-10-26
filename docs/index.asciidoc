@@ -1,0 +1,5 @@
+= Ugebeat Docs
+
+Welcome to the Ugebeat documentation.
+
+

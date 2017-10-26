@@ -1,0 +1,9 @@
+- key: ugebeat
+  title: ugebeat
+  description:
+  fields:
+    - name: counter
+      type: long
+      required: true
+      description: >
+        PLEASE UPDATE DOCUMENTATION
