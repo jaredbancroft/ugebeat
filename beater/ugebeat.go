@@ -11,13 +11,14 @@ import (
 	"github.com/jaredbancroft/ugebeat/config"
 )
 
+// Ugebeat - Define struct
 type Ugebeat struct {
 	done   chan struct{}
 	config config.Config
 	client beat.Client
 }
 
-// Creates beater
+// New - Creates beater
 func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 	config := config.DefaultConfig
 	if err := cfg.Unpack(&config); err != nil {
@@ -31,6 +32,7 @@ func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 	return bt, nil
 }
 
+// Run - Run beater
 func (bt *Ugebeat) Run(b *beat.Beat) error {
 	logp.Info("ugebeat is running! Hit CTRL-C to stop it.")
 
@@ -52,8 +54,10 @@ func (bt *Ugebeat) Run(b *beat.Beat) error {
 		event := beat.Event{
 			Timestamp: time.Now(),
 			Fields: common.MapStr{
-				"type":       b.Info.Name,
-				"counter":    counter,
+				"type":    b.Info.Name,
+				"counter": counter,
+				"ugeroot": bt.config.Ugeroot,
+				"ugecell": bt.config.Ugecell,
 			},
 		}
 		bt.client.Publish(event)
@@ -62,6 +66,7 @@ func (bt *Ugebeat) Run(b *beat.Beat) error {
 	}
 }
 
+//Stop - kill beater
 func (bt *Ugebeat) Stop() {
 	bt.client.Close()
 	close(bt.done)
