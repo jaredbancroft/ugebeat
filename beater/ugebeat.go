@@ -1,9 +1,7 @@
 package beater
 
 import (
-	"bytes"
 	"fmt"
-	"log"
 	"os/exec"
 	"time"
 
@@ -79,7 +77,7 @@ func (bt *Ugebeat) Stop() {
 //GetRunningJobs - get a count of running jobs
 func (bt *Ugebeat) GetRunningJobs() string {
 
-	cmdName := "qstat"
+	/*cmdName := "qstat"
 	cmdArgs := []string{"-u", "\\*", "|", "wc", "-l"}
 	cmd := exec.Command(cmdName, cmdArgs...)
 	stdout, err := cmd.StdoutPipe()
@@ -96,6 +94,13 @@ func (bt *Ugebeat) GetRunningJobs() string {
 	if err := cmd.Wait(); err != nil {
 		log.Fatal(err)
 	}
-
 	return swc
+	*/
+	cmd := "qstat -u \\* -s r | wc -l"
+	out, err := exec.Command("bash", "-c", cmd).Output()
+	if err != nil {
+		return fmt.Sprintf("failed")
+	}
+	return string(out)
+
 }
