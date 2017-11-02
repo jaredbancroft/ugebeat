@@ -1,7 +1,10 @@
 package beater
 
 import (
+	"bytes"
 	"fmt"
+	"log"
+	"os/exec"
 	"time"
 
 	"github.com/elastic/beats/libbeat/beat"
@@ -54,10 +57,11 @@ func (bt *Ugebeat) Run(b *beat.Beat) error {
 		event := beat.Event{
 			Timestamp: time.Now(),
 			Fields: common.MapStr{
-				"type":    b.Info.Name,
-				"counter": counter,
-				"ugeroot": bt.config.Ugeroot,
-				"ugecell": bt.config.Ugecell,
+				"type":            b.Info.Name,
+				"counter":         counter,
+				"ugeroot":         bt.config.Ugeroot,
+				"ugecell":         bt.config.Ugecell,
+				"ugerunningcount": bt.GetRunningJobs(),
 			},
 		}
 		bt.client.Publish(event)
@@ -70,4 +74,28 @@ func (bt *Ugebeat) Run(b *beat.Beat) error {
 func (bt *Ugebeat) Stop() {
 	bt.client.Close()
 	close(bt.done)
+}
+
+//GetRunningJobs - get a count of running jobs
+func (bt *Ugebeat) GetRunningJobs() string {
+
+	cmdName := "echo"
+	cmdArgs := []string{"30"}
+	cmd := exec.Command(cmdName, cmdArgs...)
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err := cmd.Start(); err != nil {
+		log.Fatal(err)
+	}
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(stdout)
+	swc := buf.String()
+	//wc := strconv.Atoi(swc)
+	if err := cmd.Wait(); err != nil {
+		log.Fatal(err)
+	}
+
+	return swc
 }

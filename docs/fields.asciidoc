@@ -296,3 +296,11 @@ required: True
 $SGE_CELL
 
 
+[float]
+=== `ugerunningcount`
+
+required: True
+
+Number of running jobs
+
+

@@ -183,3 +183,7 @@
       required: true
       description: >
         $SGE_CELL
+    - name: ugerunningcount
+      required: true
+      description: >
+        Number of running jobs
