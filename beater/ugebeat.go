@@ -80,7 +80,7 @@ func (bt *Ugebeat) Stop() {
 func (bt *Ugebeat) GetRunningJobs() string {
 
 	cmdName := "qstat"
-	cmdArgs := []string{"-u", "\*"}
+	cmdArgs := []string{"-u", "\\*"}
 	cmd := exec.Command(cmdName, cmdArgs...)
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
