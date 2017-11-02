@@ -79,8 +79,8 @@ func (bt *Ugebeat) Stop() {
 //GetRunningJobs - get a count of running jobs
 func (bt *Ugebeat) GetRunningJobs() string {
 
-	cmdName := "echo"
-	cmdArgs := []string{"30"}
+	cmdName := "qstat"
+	cmdArgs := []string{"-u", "\*"}
 	cmd := exec.Command(cmdName, cmdArgs...)
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
