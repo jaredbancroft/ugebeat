@@ -95,6 +95,7 @@ func (bt *Ugebeat) GetRunningJobs() {
 	}
 	return swc
 	*/
-	fmt.Print(qstat.GetQueueInfo("*"))
+	js, _ := qstat.GetQueueInfo("*")
+	fmt.Print(js.QueuedJobs[0])
 
 }
