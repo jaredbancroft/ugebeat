@@ -50,15 +50,14 @@ func (bt *Ugebeat) Run(b *beat.Beat) error {
 			return nil
 		case <-ticker.C:
 		}
-
+		running, pending := bt.GetJobCounts()
 		event := beat.Event{
 			Timestamp: time.Now(),
 			Fields: common.MapStr{
-				"type":            b.Info.Name,
-				"counter":         counter,
-				"ugeroot":         bt.config.Ugeroot,
-				"ugecell":         bt.config.Ugecell,
-				"ugerunningcount": bt.GetRunningJobs(),
+				"type":    b.Info.Name,
+				"counter": counter,
+				"running": running,
+				"pending": pending,
 			},
 		}
 		bt.client.Publish(event)
@@ -73,30 +72,10 @@ func (bt *Ugebeat) Stop() {
 	close(bt.done)
 }
 
-//GetRunningJobs - get a count of running jobs
-func (bt *Ugebeat) GetRunningJobs() int {
-
-	/*cmdName := "qstat"
-	cmdArgs := []string{"-u", "\\*", "|", "wc", "-l"}
-	cmd := exec.Command(cmdName, cmdArgs...)
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
-		log.Fatal(err)
-	}
-	if err := cmd.Start(); err != nil {
-		log.Fatal(err)
-	}
-	buf := new(bytes.Buffer)
-	buf.ReadFrom(stdout)
-	swc := buf.String()
-	//wc := strconv.Atoi(swc)
-	if err := cmd.Wait(); err != nil {
-		log.Fatal(err)
-	}
-	return swc
-	*/
-
-	js, _ := qstat.GetQueueInfo("*")
-	return len(js.QueuedJobs)
-
+//GetJobCounts - get a count of running and pending jobs
+func (bt *Ugebeat) GetJobCounts() (int, int) {
+	qinfo, _ := qstat.GetQueueInfo("*")
+	running := len(qinfo.QueuedJobs)
+	pending := len(qinfo.PendingJobs)
+	return running, pending
 }

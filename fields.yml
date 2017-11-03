@@ -175,15 +175,13 @@
       required: true
       description: >
         PLEASE UPDATE DOCUMENTATION
-    - name: ugeroot
-      required: true
-      description: >
-        $SGE_ROOT
-    - name: ugecell
-      required: true
-      description: >
-        $SGE_CELL
-    - name: ugerunningcount
+    - name: running
+      type: long
       required: true
       description: >
         Number of running jobs
+    - name: pending
+      type: long
+      required: true
+      description: >
+        Number of pending jobs
