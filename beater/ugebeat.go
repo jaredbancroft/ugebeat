@@ -35,7 +35,7 @@ func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 // Run - Run beater
 func (bt *Ugebeat) Run(b *beat.Beat) error {
 	logp.Info("ugebeat is running! Hit CTRL-C to stop it.")
-	bt.GetRunningJobs()
+
 	var err error
 	bt.client, err = b.Publisher.Connect()
 	if err != nil {
@@ -58,7 +58,7 @@ func (bt *Ugebeat) Run(b *beat.Beat) error {
 				"counter":         counter,
 				"ugeroot":         bt.config.Ugeroot,
 				"ugecell":         bt.config.Ugecell,
-				"ugerunningcount": "1",
+				"ugerunningcount": bt.GetRunningJobs(),
 			},
 		}
 		bt.client.Publish(event)
@@ -74,7 +74,7 @@ func (bt *Ugebeat) Stop() {
 }
 
 //GetRunningJobs - get a count of running jobs
-func (bt *Ugebeat) GetRunningJobs() {
+func (bt *Ugebeat) GetRunningJobs() int {
 
 	/*cmdName := "qstat"
 	cmdArgs := []string{"-u", "\\*", "|", "wc", "-l"}
@@ -95,7 +95,8 @@ func (bt *Ugebeat) GetRunningJobs() {
 	}
 	return swc
 	*/
+
 	js, _ := qstat.GetQueueInfo("*")
-	fmt.Print(js.QueuedJobs[0])
+	return len(js.QueuedJobs)
 
 }
