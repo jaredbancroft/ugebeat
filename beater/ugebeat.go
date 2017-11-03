@@ -76,6 +76,9 @@ func (bt *Ugebeat) Stop() {
 func (bt *Ugebeat) GetJobCounts() (int, int) {
 	qinfo, _ := qstat.GetQueueInfo("*")
 	running := len(qinfo.QueuedJobs)
-	pending := len(qinfo.PendingJobs)
+	pending := 0
+	for _, element := range qinfo.PendingJobs {
+		pending += element.NumTasks()
+	}
 	return running, pending
 }
