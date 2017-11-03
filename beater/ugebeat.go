@@ -2,14 +2,13 @@ package beater
 
 import (
 	"fmt"
-	"os/exec"
 	"time"
 
 	"github.com/elastic/beats/libbeat/beat"
 	"github.com/elastic/beats/libbeat/common"
 	"github.com/elastic/beats/libbeat/logp"
-
 	"github.com/jaredbancroft/ugebeat/config"
+	"github.com/kisielk/gorge/qstat"
 )
 
 // Ugebeat - Define struct
@@ -36,7 +35,7 @@ func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 // Run - Run beater
 func (bt *Ugebeat) Run(b *beat.Beat) error {
 	logp.Info("ugebeat is running! Hit CTRL-C to stop it.")
-
+	bt.GetRunningJobs()
 	var err error
 	bt.client, err = b.Publisher.Connect()
 	if err != nil {
@@ -59,7 +58,7 @@ func (bt *Ugebeat) Run(b *beat.Beat) error {
 				"counter":         counter,
 				"ugeroot":         bt.config.Ugeroot,
 				"ugecell":         bt.config.Ugecell,
-				"ugerunningcount": bt.GetRunningJobs(),
+				"ugerunningcount": "1",
 			},
 		}
 		bt.client.Publish(event)
@@ -75,7 +74,7 @@ func (bt *Ugebeat) Stop() {
 }
 
 //GetRunningJobs - get a count of running jobs
-func (bt *Ugebeat) GetRunningJobs() string {
+func (bt *Ugebeat) GetRunningJobs() {
 
 	/*cmdName := "qstat"
 	cmdArgs := []string{"-u", "\\*", "|", "wc", "-l"}
@@ -96,11 +95,6 @@ func (bt *Ugebeat) GetRunningJobs() string {
 	}
 	return swc
 	*/
-	cmd := "qstat -u \\* -s r | wc -l"
-	out, err := exec.Command("bash", "-c", cmd).Output()
-	if err != nil {
-		return fmt.Sprintf("failed")
-	}
-	return string(out)
+	fmt.Print(qstat.GetQueueInfo("*"))
 
 }
