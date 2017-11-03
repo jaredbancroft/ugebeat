@@ -7,14 +7,10 @@ import "time"
 
 // Config - configuration options for beat
 type Config struct {
-	Period  time.Duration `config:"period"`
-	Ugeroot string        `config:"ugeroot"`
-	Ugecell string        `config:"ugecell"`
+	Period time.Duration `config:"period"`
 }
 
 // DefaultConfig - configurations if no configuration provided
 var DefaultConfig = Config{
-	Period:  1 * time.Second,
-	Ugeroot: ".",
-	Ugecell: "default",
+	Period: 1 * time.Second,
 }

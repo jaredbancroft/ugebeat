@@ -7,8 +7,8 @@ import (
 	"github.com/elastic/beats/libbeat/beat"
 	"github.com/elastic/beats/libbeat/common"
 	"github.com/elastic/beats/libbeat/logp"
-
 	"github.com/jaredbancroft/ugebeat/config"
+	"github.com/kisielk/gorge/qstat"
 )
 
 // Ugebeat - Define struct
@@ -50,14 +50,14 @@ func (bt *Ugebeat) Run(b *beat.Beat) error {
 			return nil
 		case <-ticker.C:
 		}
-
+		running, pending := bt.GetJobCounts()
 		event := beat.Event{
 			Timestamp: time.Now(),
 			Fields: common.MapStr{
 				"type":    b.Info.Name,
 				"counter": counter,
-				"ugeroot": bt.config.Ugeroot,
-				"ugecell": bt.config.Ugecell,
+				"running": running,
+				"pending": pending,
 			},
 		}
 		bt.client.Publish(event)
@@ -70,4 +70,15 @@ func (bt *Ugebeat) Run(b *beat.Beat) error {
 func (bt *Ugebeat) Stop() {
 	bt.client.Close()
 	close(bt.done)
+}
+
+//GetJobCounts - get a count of running and pending jobs
+func (bt *Ugebeat) GetJobCounts() (int, int) {
+	qinfo, _ := qstat.GetQueueInfo("*")
+	running := len(qinfo.QueuedJobs)
+	pending := 0
+	for _, element := range qinfo.PendingJobs {
+		pending += element.NumTasks()
+	}
+	return running, pending
 }

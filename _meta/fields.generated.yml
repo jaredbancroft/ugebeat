@@ -7,11 +7,13 @@
       required: true
       description: >
         PLEASE UPDATE DOCUMENTATION
-    - name: ugeroot
+    - name: running
+      type: long
       required: true
       description: >
-        $SGE_ROOT
-    - name: ugecell
+        Number of running jobs
+    - name: pending
+      type: long
       required: true
       description: >
-        $SGE_CELL
+        Number of pending jobs

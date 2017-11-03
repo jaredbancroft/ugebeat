@@ -4,10 +4,7 @@
 
 ugebeat:
   # Defines how often an event is sent to the output
-  period: 1s
-  # Defines path to UGE Rest API
-  ugeroot: "."
-  ugecell: "default"
+  period: 5s
 
 #================================ General ======================================
 

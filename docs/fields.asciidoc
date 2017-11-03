@@ -281,18 +281,22 @@ PLEASE UPDATE DOCUMENTATION
 
 
 [float]
-=== `ugeroot`
+=== `running`
+
+type: long
 
 required: True
 
-$SGE_ROOT
+Number of running jobs
 
 
 [float]
-=== `ugecell`
+=== `pending`
+
+type: long
 
 required: True
 
-$SGE_CELL
+Number of pending jobs
 
 
